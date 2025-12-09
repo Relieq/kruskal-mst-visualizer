@@ -1,42 +1,131 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* reset rất nhẹ để khỏi bị căn giữa như template mặc định */
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+  sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #1f2933;
+  background-color: #f5f7fa;
+}
+
+body {
+  margin: 0;
+}
+
+/* gốc của app */
+.app-root {
+  min-height: 100vh;
+  padding: 24px 16px 40px;
+  box-sizing: border-box;
+  max-width: min(100%, 1440px);      /* giới hạn chiều rộng nội dung */
+  margin: 0 auto; /* cái này là cái căn giữa */
+}
+
+/* layout 3 cột chính */
+.main-layout {
+  display: grid;
+  grid-template-columns: 1.3fr 1.5fr 1.2fr; /* trái / giữa / phải */
+  gap: 16px;
+  align-items: flex-start;
+  margin-top: 16px;
+}
+
+/* Màn hình vừa: tablet, laptop nhỏ */
+@media (max-width: 1024px) {
+  .main-layout {
+    grid-template-columns: 1fr; /* xếp 1 cột */
+  }
+
+  .left-column,
+  .middle-column,
+  .right-column {
+    min-height: auto;
+  }
+}
+
+/* Màn hình rất nhỏ: điện thoại dọc */
+@media (max-width: 640px) {
+  .panel {
+    padding: 12px 14px;
+  }
+
+  .control-panel {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* panel chung */
+.panel {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+  text-align: left; /* quan trọng: căn trái */
+}
+
+.panel h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+/* cột trái / giữa / phải chỉ để đọc code cho dễ, không bắt buộc */
+.left-column,
+.middle-column,
+.right-column {
+  min-height: 200px;
+}
+
+/* code viewer */
+.code-block {
+  margin: 0;
+  font-family: "JetBrains Mono", "Fira Code", Menlo, Monaco, Consolas,
+  "Liberation Mono", "Courier New", monospace;
+  font-size: 13px;
+}
+
+.code-line {
+  white-space: pre;          /* GIỮ INDENTATION */
+  padding: 2px 4px;
+}
+
+.code-line .line-number {
+  color: #d800ff;
+}
+
+/* dòng code đang highlight */
+.code-line.highlighted {
+  background-color: rgb(145, 82, 67);
+  border-left: 3px solid #00ffc4;
+}
+
+/* control panel dưới cùng */
+.control-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+}
+
+.control-panel button {
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid #d0d7e2;
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+.control-panel button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.control-panel span {
+  min-width: 80px;
   text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
