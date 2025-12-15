@@ -16,6 +16,12 @@ export interface Step {
     highlightedLines: number[];             // các dòng Python cần tô đậm (1-based)
     explanation: string;                    // giải thích tiếng Việt
     mstWeight?: number;                     // tổng trọng số của MST tại bước này
+    dsuParent?: number[];   // length = n+1, index = node
+    dsuRank?: number[];
+    focusNodes?: number[];  // node đang được "chạm" ở step này (ví dụ trong find/union)
+    dfsSource?: number;
+    dfsTarget?: number;
+    dfsVisited?: number[];   // các đỉnh đã thăm khi kiểm tra đường đi giữa u và v
     note?: string;
     tags?: string[];
 }

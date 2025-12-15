@@ -63,6 +63,8 @@ export function buildKruskalDsuSteps(graph: ParsedGraph): Step[] {
         explanation:
             "Bắt đầu thuật toán Kruskal: sắp xếp các cạnh theo trọng số tăng dần và khởi tạo DSU, mst_weight, mst_edges.",
         mstWeight,
+        dsuParent: [...dsu.parent],
+        dsuRank: [...dsu.rank],
     });
 
     for (const e of sorted) {
@@ -83,6 +85,9 @@ export function buildKruskalDsuSteps(graph: ParsedGraph): Step[] {
             highlightedLines: [27], // for u, v, w in edges
             explanation: `Xét cạnh (${e.u}, ${e.v}) có trọng số ${e.w}.`,
             mstWeight,
+            dsuParent: [...dsu.parent],
+            dsuRank: [...dsu.rank],
+            focusNodes: [e.u, e.v],
         });
 
         const pu = dsu.find(e.u);
@@ -100,9 +105,12 @@ export function buildKruskalDsuSteps(graph: ParsedGraph): Step[] {
                 edgeStatus: { ...edgeStatus },
                 sortedEdgeIds: sortedIds,
                 mstEdges: [...mstEdges],
-                highlightedLines: [28, 29, 30], // if dsu.union ... + cập nhật mst_weight, mst_edges
+                highlightedLines: [20, 28, 29, 30], // if dsu.union ... + cập nhật mst_weight, mst_edges
                 explanation: `Hai đỉnh thuộc hai thành phần khác nhau, thêm cạnh này vào MST. Tổng trọng số MST hiện tại: ${mstWeight}.`,
                 mstWeight,
+                dsuParent: [...dsu.parent],
+                dsuRank: [...dsu.rank],
+                focusNodes: [e.u, e.v],
             });
         } else {
             edgeStatus[e.id] = "rejected";
@@ -112,10 +120,13 @@ export function buildKruskalDsuSteps(graph: ParsedGraph): Step[] {
                 edgeStatus: { ...edgeStatus },
                 sortedEdgeIds: sortedIds,
                 mstEdges: [...mstEdges],
-                highlightedLines: [28], // if dsu.union(u, v):  (nhưng union trả về False)
+                highlightedLines: [14, 28], // if dsu.union(u, v):  (nhưng union trả về False)
                 explanation:
                     "Hai đỉnh đã nằm trong cùng một thành phần (nếu thêm sẽ tạo chu trình), nên loại cạnh này khỏi MST.",
                 mstWeight,
+                dsuParent: [...dsu.parent],
+                dsuRank: [...dsu.rank],
+                focusNodes: [e.u, e.v],
             });
         }
     }
@@ -130,6 +141,8 @@ export function buildKruskalDsuSteps(graph: ParsedGraph): Step[] {
         highlightedLines: [31], // return mst_weight, mst_edges
         explanation: `Thuật toán kết thúc. Tổng trọng số của cây khung nhỏ nhất là ${mstWeight}.`,
         mstWeight,
+        dsuParent: [...dsu.parent],
+        dsuRank: [...dsu.rank],
     });
 
     return steps;

@@ -157,7 +157,7 @@ export const GraphRenderer: React.FC<GraphRendererProps> = ({
             switch (status) {
                 case "current":   color = "#facc15"; size = baseEdgeSize; break;
                 case "chosen":    color = "#22c55e"; size = baseEdgeSize * 1.5; break;
-                case "rejected":  color = "#ef4444"; size = baseEdgeSize; break;
+                case "rejected":  color = "#dcd4d4"; size = baseEdgeSize; break;
             }
 
             if (graph.hasEdge(e.id)) {
