@@ -165,7 +165,22 @@ export const GraphRenderer: React.FC<GraphRendererProps> = ({
                 graph.setEdgeAttribute(e.id, "size", size);
             }
         });
-    }, [currentStep, edges]);
+
+        const nodeStatus = currentStep?.nodeStatus ?? {};
+        nodes.forEach((id) => {
+            const key = String(id);
+            const st = nodeStatus[key] ?? "normal";
+
+            let color = "#0f172a";
+            switch (st) {
+                case "findStart": color = "#00ffc4"; break;
+                case "findWalk":  color = "#facc15"; break;
+                case "findRoot":  color = "#d800ff"; break;
+            }
+            if (graph.hasNode(key)) graph.setNodeAttribute(key, "color", color);
+        });
+
+    }, [currentStep, edges, nodes]);
 
     return (
         <div className="panel" style={{ position: 'relative' }}>

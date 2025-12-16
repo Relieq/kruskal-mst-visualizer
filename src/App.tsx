@@ -16,7 +16,7 @@ import {DFSPanel} from "./components/DFSPanel.tsx";
 
 type Mode = "dsu" | "dfs";
 
-const PYTHON_KRUSKAL_DSU = [
+const PYTHON_KRUSKAL_DSU_PC = [
     "class DSU:",
     "    def __init__(self, n):",
     "        self.parent = list(range(n + 1))",
@@ -25,6 +25,40 @@ const PYTHON_KRUSKAL_DSU = [
     "    def find(self, u):",
     "        if self.parent[u] != u:",
     "            self.parent[u] = self.find(self.parent[u])",
+    "        return self.parent[u]",
+    "",
+    "    def union(self, u, v):",
+    "        pu, pv = self.find(u), self.find(v)",
+    "        if pu == pv:",
+    "            return False",
+    "        if self.rank[pu] < self.rank[pv]:",
+    "            pu, pv = pv, pu",
+    "        self.parent[pv] = pu",
+    "        if self.rank[pu] == self.rank[pv]:",
+    "            self.rank[pu] += 1",
+    "        return True",
+    "",
+    "def kruskal(n, edges):",
+    "    edges.sort(key=lambda e: e[2])",
+    "    dsu = DSU(n)",
+    "    mst_weight = 0",
+    "    mst_edges = []",
+    "    for u, v, w in edges:",
+    "        if dsu.union(u, v):",
+    "            mst_weight += w",
+    "            mst_edges.append((u, v, w))",
+    "    return mst_weight, mst_edges",
+];
+
+const PYTHON_KRUSKAL_DSU_NO_PC = [
+    "class DSU:",
+    "    def __init__(self, n):",
+    "        self.parent = list(range(n + 1))",
+    "        self.rank = [0] * (n + 1)",
+    "",
+    "    def find(self, u):",
+    "        if self.parent[u] != u:",
+    "            return self.find(self.parent[u])",
     "        return self.parent[u]",
     "",
     "    def union(self, u, v):",
@@ -82,14 +116,27 @@ function App() {
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [mode, setMode] = useState<Mode>("dsu");
-    const codeLines = mode === "dsu" ? PYTHON_KRUSKAL_DSU : PYTHON_KRUSKAL_DFS;
+    const [dsuDetailed, setDsuDetailed] = useState(true);
+    const [compression, setCompression] = useState(true);
+    const [maxFindHops, setMaxFindHops] = useState(6);
+
+    const codeLines = mode === "dfs"
+        ? PYTHON_KRUSKAL_DFS
+        : compression
+            ? PYTHON_KRUSKAL_DSU_PC
+            : PYTHON_KRUSKAL_DSU_NO_PC;
 
 
     const currentStep = steps[currentStepIndex] ?? null;
 
     function buildStepsForMode(mode: Mode, g: ParsedGraph): Step[] {
         if (mode === "dfs") return buildKruskalDfsSteps(g);
-        return buildKruskalDsuSteps(g);
+
+        return buildKruskalDsuSteps(g, {
+            detailed: dsuDetailed,
+            compression,
+            maxFindHops,
+        });
     }
 
     const handleGraphLoaded = (g: ParsedGraph) => {
@@ -172,7 +219,7 @@ function App() {
                 }
                 return Math.min(next, steps.length - 1);
             });
-        }, 800); // 800ms mỗi step (bạn có thể chỉnh nhanh/chậm hơn)
+        }, 800); // 800ms mỗi step (có thể chỉnh nhanh/chậm hơn)
 
         return () => clearTimeout(timer);
     }, [isPlaying, currentStepIndex, steps.length]);
@@ -228,6 +275,71 @@ function App() {
                     Kruskal + DFS
                 </button>
             </div>
+
+            {mode === "dsu" && (
+                <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 8, flexWrap: "wrap" }}>
+                    <label style={{ fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
+                        <input
+                            type="checkbox"
+                            checked={dsuDetailed}
+                            onChange={(e) => {
+                                setDsuDetailed(e.target.checked);
+                                setIsPlaying(false);
+                                if (graph) {
+                                    setSteps(buildKruskalDsuSteps(graph, {
+                                        detailed: e.target.checked, compression,
+                                        maxFindHops
+                                    }));
+                                    setCurrentStepIndex(0);
+                                }
+                            }}
+                        />
+                        Detailed DSU
+                    </label>
+
+                    <label style={{ fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
+                        <input
+                            type="checkbox"
+                            checked={compression}
+                            onChange={(e) => {
+                                setCompression(e.target.checked);
+                                setIsPlaying(false);
+                                if (graph) {
+                                    setSteps(buildKruskalDsuSteps(graph, {
+                                        detailed: dsuDetailed,
+                                        compression: e.target.checked, maxFindHops
+                                    }));
+                                    setCurrentStepIndex(0);
+                                }
+                            }}
+                        />
+                        Path compression
+                    </label>
+
+                    <label style={{ fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
+                        Max find hops:
+                        <input
+                            type="number"
+                            min={1}
+                            max={200}
+                            value={maxFindHops}
+                            onChange={(e) => {
+                                const v = Math.max(1, Number(e.target.value));
+                                setMaxFindHops(v);
+                                setIsPlaying(false);
+                                if (graph) {
+                                    setSteps(buildKruskalDsuSteps(graph, {
+                                        detailed: dsuDetailed,
+                                        compression, maxFindHops: v
+                                    }));
+                                    setCurrentStepIndex(0);
+                                }
+                            }}
+                            style={{ width: 70 }}
+                        />
+                    </label>
+                </div>
+            )}
 
             <div className="main-layout">
                 <div className="left-column">

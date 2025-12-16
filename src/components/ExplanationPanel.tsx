@@ -6,14 +6,14 @@ interface ExplanationPanelProps {
 }
 
 export const ExplanationPanel: React.FC<ExplanationPanelProps> = ({
-                                                                      currentStep,
+                                                                      currentStep
                                                                   }) => {
     return (
         <div className="panel">
             <h2>Giải thích bước hiện tại</h2>
             {currentStep ? (
                 <>
-                    <p><strong>Step {currentStep.stepId}</strong></p>
+                    <p><strong>Step {currentStep.stepLabel ?? "cuối"}</strong></p>
                     <p>{currentStep.explanation}</p>
                     {currentStep.mstWeight !== undefined && (
                         <p>Tổng trọng số MST hiện tại: {currentStep.mstWeight}</p>
