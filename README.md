@@ -71,3 +71,11 @@ export default defineConfig([
   },
 ])
 ```
+
+Test code:
+```bash
+npx tsx scripts/test-all.ts
+```
+
+Results:
+![test_3_ver_code.png](images/test_3_ver_code.png)
