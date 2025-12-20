@@ -12,6 +12,7 @@ import {EdgeListPanel} from "./components/EdgeListPanel.tsx";
 import {DSUPanel} from "./components/DSUPanel.tsx";
 import {buildKruskalDfsSteps} from "./engine/kruskalDfs.ts";
 import {DFSPanel} from "./components/DFSPanel.tsx";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 
 type Mode = "dsu" | "dfs";
@@ -420,6 +421,7 @@ function App() {
                     <ExplanationPanel currentStep={currentStep} />
                 </div>
             </div>
+            <SpeedInsights />
         </div>
     );
 }
