@@ -116,9 +116,11 @@ function App() {
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [mode, setMode] = useState<Mode>("dsu");
-    const [dsuDetailed, setDsuDetailed] = useState(true);
+    const [dsuDetailed, setDsuDetailed] = useState(false);
     const [compression, setCompression] = useState(true);
     const [maxFindHops, setMaxFindHops] = useState(6);
+    const [dfsDetailed, setDfsDetailed] = useState(false);
+    const [maxDfsSteps, setMaxDfsSteps] = useState(6);
 
     const codeLines = mode === "dfs"
         ? PYTHON_KRUSKAL_DFS
@@ -130,7 +132,10 @@ function App() {
     const currentStep = steps[currentStepIndex] ?? null;
 
     function buildStepsForMode(mode: Mode, g: ParsedGraph): Step[] {
-        if (mode === "dfs") return buildKruskalDfsSteps(g);
+        if (mode === "dfs") return buildKruskalDfsSteps(g, {
+            detailed: dfsDetailed,
+            maxDfsSteps,
+        });
 
         return buildKruskalDsuSteps(g, {
             detailed: dsuDetailed,
@@ -331,6 +336,52 @@ function App() {
                                     setSteps(buildKruskalDsuSteps(graph, {
                                         detailed: dsuDetailed,
                                         compression, maxFindHops: v
+                                    }));
+                                    setCurrentStepIndex(0);
+                                }
+                            }}
+                            style={{ width: 70 }}
+                        />
+                    </label>
+                </div>
+            )}
+
+            {mode === "dfs" && (
+                <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 8, flexWrap: "wrap" }}>
+                    <label style={{ fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
+                        <input
+                            type="checkbox"
+                            checked={dfsDetailed}
+                            onChange={(e) => {
+                                setDfsDetailed(e.target.checked);
+                                setIsPlaying(false);
+                                if (graph) {
+                                    setSteps(buildKruskalDfsSteps(graph, {
+                                        detailed: e.target.checked,
+                                        maxDfsSteps
+                                    }));
+                                    setCurrentStepIndex(0);
+                                }
+                            }}
+                        />
+                        Detailed DFS
+                    </label>
+
+                    <label style={{ fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
+                        Max DFS steps:
+                        <input
+                            type="number"
+                            min={1}
+                            max={200}
+                            value={maxDfsSteps}
+                            onChange={(e) => {
+                                const v = Math.max(1, Number(e.target.value));
+                                setMaxDfsSteps(v);
+                                setIsPlaying(false);
+                                if (graph) {
+                                    setSteps(buildKruskalDfsSteps(graph, {
+                                        detailed: dfsDetailed,
+                                        maxDfsSteps: v
                                     }));
                                     setCurrentStepIndex(0);
                                 }

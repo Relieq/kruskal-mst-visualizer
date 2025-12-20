@@ -146,18 +146,33 @@ export const GraphRenderer: React.FC<GraphRendererProps> = ({
         if (!graph) return;
 
         const statusMap = currentStep?.edgeStatus ?? {};
+        const dfsEdgeOverlay = currentStep?.dfsEdgeOverlay ?? {};
 
         edges.forEach((e) => {
             const status = statusMap[e.id] ?? "normal";
             const baseEdgeSize = baseEdgeSizeRef.current;
 
+            // 1. Base color/size từ Kruskal
             let color = "#1e3260";
             let size = baseEdgeSize;
 
             switch (status) {
                 case "current":   color = "#facc15"; size = baseEdgeSize; break;
                 case "chosen":    color = "#22c55e"; size = baseEdgeSize * 1.5; break;
-                case "rejected":  color = "#dcd4d4"; size = baseEdgeSize; break;
+                case "rejected":  color = "#dcd4d4"; size = baseEdgeSize * 0.8; break;
+            }
+
+            // 2. Nếu có DFS overlay → override (chồng lên)
+            const dfsOv = dfsEdgeOverlay[e.id];
+            if (dfsOv) {
+                switch (dfsOv) {
+                    case "candidate":
+                        color = "#f97316"; size = baseEdgeSize; break;
+                    case "active":
+                        color = "#00ffc4"; size = baseEdgeSize; break;
+                    case "dead":
+                        color = "#86ca9f"; size = baseEdgeSize * 0.8; break;
+                }
             }
 
             if (graph.hasEdge(e.id)) {

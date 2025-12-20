@@ -102,7 +102,7 @@ export function buildKruskalDsuSteps(graph: ParsedGraph, opts: Partial<DsuSimOpt
         return `${major}.3.${++minorHop3}`;
     };
 
-// giữ pushStep nhưng cho phép truyền stepLabel
+    // giữ pushStep nhưng cho phép truyền stepLabel
     const pushStep = (s: Omit<Step, "stepId">) => {
         steps.push({ stepId: stepId++, ...s });
     };

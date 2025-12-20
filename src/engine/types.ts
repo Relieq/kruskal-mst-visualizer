@@ -1,5 +1,12 @@
 export type EdgeStatus = 'normal' | 'chosen' | 'rejected' | 'current';
-export type NodeStatus = "normal" | "findStart" | "findWalk" | "findRoot";
+export type NodeStatus =
+    | "normal"
+    | "findStart"
+    | "findWalk"
+    | "findRoot"
+    | "dfsCurrent"
+    | "dfsCandidate"
+    | "dfsVisited";
 
 export type DsuAction =
     | "edge_start"
@@ -51,7 +58,15 @@ export interface Step {
     // mô tả trang thái DFS
     dfsSource?: number;
     dfsTarget?: number;
+    dfsCurrent?: number;       // node đang xử lý trong step
+    dfsNeighbors?: number[];      // danh sách neighbors đang highlight (explore step)
     dfsVisited?: number[];   // các đỉnh đã thăm khi kiểm tra đường đi giữa u và v
+    dfsStack?: number[];       // đường đệ quy hiện tại (path stack)
+    dfsFoundPath?: number[];    // đường đi tìm được (nếu có)
+    dfsAction?: "enter" | "explore" | "found" | "backtrack" | "end";
+
+    // overlay để tô màu DFS trên graph
+    dfsEdgeOverlay?: Record<string, "active" | "dead" | "candidate">;
 
     note?: string;
     tags?: string[];
