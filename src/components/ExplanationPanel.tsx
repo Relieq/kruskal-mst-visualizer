@@ -9,8 +9,7 @@ export const ExplanationPanel: React.FC<ExplanationPanelProps> = ({
                                                                       currentStep
                                                                   }) => {
     return (
-        <div className="panel">
-            <h2>Giải thích bước hiện tại</h2>
+        <div>
             {currentStep ? (
                 <>
                     <p><strong>Step {currentStep.stepLabel ?? "cuối"}</strong></p>

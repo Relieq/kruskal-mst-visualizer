@@ -47,8 +47,7 @@ export const DSUPanel: React.FC<DSUPanelProps> = ({ currentStep }) => {
 
     if (!parent || !rank) {
         return (
-            <div className="panel">
-                <h2>Trạng thái DSU</h2>
+            <div>
                 <p>Chưa khởi tạo DSU.</p>
             </div>
         );
@@ -63,16 +62,15 @@ export const DSUPanel: React.FC<DSUPanelProps> = ({ currentStep }) => {
     };
 
     return (
-        <div className="panel">
+        <div>
             <div
                 style={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    justifyContent: "flex-end",
                     alignItems: "center",
                     marginBottom: 4,
                 }}
             >
-                <h2 style={{ margin: 0 }}>Trạng thái DSU</h2>
                 {focusNodes.length > 0 && (
                     <button
                         onClick={handleNextFocus}

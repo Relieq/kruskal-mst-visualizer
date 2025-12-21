@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import type { Edge, Step } from "../engine/types";
 import Graph from "graphology";
 import Sigma from "sigma";
+import {HelpModal} from "./HelpModal.tsx";
 
 interface GraphRendererProps {
     nodes: number[];
@@ -26,6 +27,7 @@ export const GraphRenderer: React.FC<GraphRendererProps> = ({
     const rendererRef = useRef<Sigma | null>(null);
     const baseEdgeSizeRef = useRef<number>(1);
     const [tooltip, setTooltip] = useState<TooltipInfo>({ visible: false, x: 0, y: 0, content: "" });
+    const [helpOpen, setHelpOpen] = useState(false);
 
     // Khởi tạo graph + sigma mọi khi nodes/edges thay đổi
     useEffect(() => {
@@ -198,8 +200,18 @@ export const GraphRenderer: React.FC<GraphRendererProps> = ({
     }, [currentStep, edges, nodes]);
 
     return (
-        <div className="panel" style={{ position: 'relative' }}>
-            <h2>Graph</h2>
+        <div style={{ position: 'relative' }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 4 }}>
+                <button
+                    className="help-button"
+                    onClick={() => setHelpOpen(true)}
+                    aria-label="Open legend and help"
+                    title="Legend & Help"
+                >
+                    ?
+                </button>
+            </div>
+
             <div
                 ref={containerRef}
                 style={{
@@ -227,6 +239,8 @@ export const GraphRenderer: React.FC<GraphRendererProps> = ({
                     {tooltip.content}
                 </div>
             )}
+
+            <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
         </div>
     );
 };

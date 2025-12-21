@@ -14,45 +14,43 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
     const code = codeLines.join("\n");
 
     return (
-        <div className="panel">
-            <h2>Code (Python)</h2>
+        <Highlight
+            {...defaultProps}
+            code={code}
+            language="python"
+            theme={nightOwl}
+        >
+            {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                <pre className={`code-block ${className}`} style={style}>
+                    <code className="code-block-inner">
+                        {tokens.map((line, i) => {
+                            const lineNumber = i + 1;
+                            const isHighlighted = highlightedLines.includes(lineNumber);
 
-            <Highlight
-                {...defaultProps}
-                code={code}
-                language="python"
-                theme={nightOwl}
-            >
-                {({ className, style, tokens, getLineProps, getTokenProps }) => (
-                    <pre className={`code-block ${className}`} style={style}>
-            {tokens.map((line, i) => {
-                const lineNumber = i + 1;
-                const isHighlighted = highlightedLines.includes(lineNumber);
+                            const lineProps = getLineProps({ line, key: i });
+                            const extraClass = isHighlighted ? " highlighted" : "";
 
-                const lineProps = getLineProps({ line, key: i });
-                const extraClass = isHighlighted ? " highlighted" : "";
-
-                return (
-                    <div
-                        key={i}
-                        {...lineProps}
-                        className={`code-line${extraClass} ${
-                            lineProps.className ?? ""
-                        }`}
-                    >
-                  <span className="line-number">
-                    {lineNumber.toString().padStart(2, " ")}
-                  </span>{" "}
-                        {line.map((token, key) => {
-                            const tokenProps = getTokenProps({ token, key });
-                            return <span key={key} {...tokenProps} />;
+                            return (
+                                <div
+                                    key={i}
+                                    {...lineProps}
+                                    className={`code-line${extraClass} ${
+                                        lineProps.className ?? ""
+                                    }`}
+                                >
+                                    <span className="line-number">
+                                        {lineNumber.toString().padStart(2, " ")}
+                                    </span>{" "}
+                                    {line.map((token, key) => {
+                                        const tokenProps = getTokenProps({ token, key });
+                                        return <span key={key} {...tokenProps} />;
+                                    })}
+                                </div>
+                            );
                         })}
-                    </div>
-                );
-            })}
-          </pre>
-                )}
-            </Highlight>
-        </div>
+                    </code>
+                </pre>
+            )}
+        </Highlight>
     );
 };

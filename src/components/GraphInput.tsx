@@ -41,9 +41,8 @@ export const GraphInput: React.FC<GraphInputProps> = ({ onGraphLoaded }) => {
     };
 
     return (
-        <div className="panel" style={{ marginBottom: 12 }}>
-            <h2>Nhập đồ thị</h2>
-            <p style={{ fontSize: 12, color: "#6b7280" }}>
+        <div>
+            <p style={{ fontSize: 12, color: "#6b7280", marginTop: 0 }}>
                 Định dạng: dòng 1 là <code>N M</code>, các dòng sau là <code>u v w</code>.
             </p>
             <textarea

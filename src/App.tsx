@@ -12,6 +12,7 @@ import {EdgeListPanel} from "./components/EdgeListPanel.tsx";
 import {DSUPanel} from "./components/DSUPanel.tsx";
 import {buildKruskalDfsSteps} from "./engine/kruskalDfs.ts";
 import {DFSPanel} from "./components/DFSPanel.tsx";
+import {CollapsiblePanel} from "./components/CollapsiblePanel.tsx";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
 
@@ -123,6 +124,17 @@ function App() {
     const [dfsDetailed, setDfsDetailed] = useState(false);
     const [maxDfsSteps, setMaxDfsSteps] = useState(6);
 
+    // Detect mobile screen
+    const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 640);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 640);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     const codeLines = mode === "dfs"
         ? PYTHON_KRUSKAL_DFS
         : compression
@@ -232,15 +244,17 @@ function App() {
 
     return (
         <div className="app-root">
-            <ControlPanel
-                currentStepIndex={currentStepIndex}
-                totalSteps={steps.length}
-                onPrev={handlePrev}
-                onNext={handleNext}
-                isPlaying={isPlaying}
-                onPlayToggle={handlePlayToggle}
-                onSeek={handleSeek}
-            />
+            <header className="app-header">
+                <ControlPanel
+                    currentStepIndex={currentStepIndex}
+                    totalSteps={steps.length}
+                    onPrev={handlePrev}
+                    onNext={handleNext}
+                    isPlaying={isPlaying}
+                    onPlayToggle={handlePlayToggle}
+                    onSeek={handleSeek}
+                />
+            </header>
 
             <div
                 style={{
@@ -265,7 +279,7 @@ function App() {
                 >
                     Kruskal + DSU
                 </button>
-                
+
                 <button
                     onClick={() => handleModeChange("dfs")}
                     style={{
@@ -393,32 +407,45 @@ function App() {
                 </div>
             )}
 
+
             <div className="main-layout">
                 <div className="left-column">
-                    <GraphInput onGraphLoaded={handleGraphLoaded} />
-                    <GraphRenderer
-                        nodes={graph?.nodes ?? []}
-                        edges={graph?.edges ?? []}
-                        currentStep={currentStep}
-                    />
-                    <EdgeListPanel
-                        edges={graph?.edges ?? []}
-                        currentStep={currentStep}
-                    />
+                    <CollapsiblePanel title="Graph Input" defaultOpen={!isMobile}>
+                        <GraphInput onGraphLoaded={handleGraphLoaded} />
+                    </CollapsiblePanel>
+                    <CollapsiblePanel title="Graph Visualization" defaultOpen={true}>
+                        <GraphRenderer
+                            nodes={graph?.nodes ?? []}
+                            edges={graph?.edges ?? []}
+                            currentStep={currentStep}
+                        />
+                    </CollapsiblePanel>
+                    <CollapsiblePanel title="Edge List" defaultOpen={!isMobile}>
+                        <EdgeListPanel
+                            edges={graph?.edges ?? []}
+                            currentStep={currentStep}
+                        />
+                    </CollapsiblePanel>
                 </div>
                 <div className="middle-column">
-                    <CodeViewer
-                        codeLines={codeLines}
-                        highlightedLines={currentStep?.highlightedLines ?? []}
-                    />
+                    <CollapsiblePanel title="Code (Python)" defaultOpen={!isMobile}>
+                        <CodeViewer
+                            codeLines={codeLines}
+                            highlightedLines={currentStep?.highlightedLines ?? []}
+                        />
+                    </CollapsiblePanel>
                 </div>
                 <div className="right-column">
-                    {mode === "dsu" ? (
-                        <DSUPanel currentStep={currentStep} />
-                    ) : (
-                        <DFSPanel edges={graph?.edges ?? []} currentStep={currentStep} />
-                    )}
-                    <ExplanationPanel currentStep={currentStep} />
+                    <CollapsiblePanel title={mode === "dsu" ? "DSU State" : "DFS State"} defaultOpen={!isMobile}>
+                        {mode === "dsu" ? (
+                            <DSUPanel currentStep={currentStep} />
+                        ) : (
+                            <DFSPanel edges={graph?.edges ?? []} currentStep={currentStep} />
+                        )}
+                    </CollapsiblePanel>
+                    <CollapsiblePanel title="Explanation" defaultOpen={true}>
+                        <ExplanationPanel currentStep={currentStep} />
+                    </CollapsiblePanel>
                 </div>
             </div>
             <SpeedInsights />

@@ -47,8 +47,7 @@ export const EdgeListPanel: React.FC<EdgeListPanelProps> = ({
     }, [currentId]);
 
     return (
-        <div className="panel" style={{ marginTop: 8 }}>
-            <h2>Thứ tự cạnh (sau khi sort)</h2>
+        <div>
             {displayEdges.length === 0 ? (
                 <p>Chưa có cạnh.</p>
             ) : (

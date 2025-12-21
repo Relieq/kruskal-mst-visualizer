@@ -35,16 +35,14 @@ export const DFSPanel: React.FC<DFSPanelProps> = ({
 
     if (!src || !dst) {
         return (
-            <div className="panel">
-                <h2>Trạng thái DFS</h2>
+            <div>
                 <p>Trong bước này chưa chạy DFS để kiểm tra chu trình.</p>
             </div>
         );
     }
 
     return (
-        <div className="panel">
-            <h2>Trạng thái DFS</h2>
+        <div>
             <p style={{ fontSize: 13 }}>
                 Đang kiểm tra xem có đường đi giữa <strong>{src}</strong> và{" "}
                 <strong>{dst}</strong> trong cây hiện tại hay không.

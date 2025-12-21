@@ -23,21 +23,23 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
 
     return (
         <div className="panel control-panel">
-            <button onClick={onPrev} disabled={currentStepIndex <= 0}>
-                Prev
-            </button>
+            <div className="button-group">
+                <button onClick={onPrev} disabled={currentStepIndex <= 0}>
+                    Prev
+                </button>
 
-            <button
-                onClick={onPlayToggle}
-                disabled={totalSteps <= 1}
-            >
-                {isPlaying ? "Pause" : "Play"}
-            </button>
+                <button
+                    onClick={onPlayToggle}
+                    disabled={totalSteps <= 1}
+                >
+                    {isPlaying ? "Pause" : "Play"}
+                </button>
 
 
-            <button onClick={onNext} disabled={currentStepIndex >= maxIndex}>
-                Next
-            </button>
+                <button onClick={onNext} disabled={currentStepIndex >= maxIndex}>
+                    Next
+                </button>
+            </div>
 
             {/* slider */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 200 }}>
