@@ -42,7 +42,7 @@ body {
 /* layout 3 cột chính */
 .main-layout {
   display: grid;
-  grid-template-columns: minmax(200px, 1fr) minmax(400px, 2fr) minmax(200px, 1fr);  /* trái / giữa / phải */
+  grid-template-columns: minmax(200px, 1fr) auto minmax(200px, 1fr);  /* cột giữa = auto để co theo nội dung */
   gap: 16px;
   align-items: flex-start;
   margin-top: 12px;
@@ -52,17 +52,29 @@ body {
   min-width: 0;
 }
 
+/* cột trái / giữa / phải - style mặc định */
+.left-column,
+.middle-column,
+.right-column {
+  min-height: 200px;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 /* Màn hình rộng: ưu tiên code block */
 @media (min-width: 1280px) {
   .main-layout {
-    grid-template-columns: minmax(220px, 1fr) minmax(500px, 2.5fr) minmax(220px, 1fr);
+    grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
   }
 }
 
 /* Màn hình rất rộng */
 @media (min-width: 1600px) {
   .main-layout {
-    grid-template-columns: minmax(250px, 1fr) minmax(600px, 3fr) minmax(250px, 1fr);
+    grid-template-columns: minmax(250px, 1fr) auto minmax(250px, 1fr);
   }
 }
 
@@ -70,12 +82,13 @@ body {
 @media (max-width: 1024px) {
   .main-layout {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .left-column,
   .middle-column,
   .right-column {
-    min-height: auto;
+    display: contents; /* Loại bỏ wrapper, panel con nằm trực tiếp trong grid */
   }
 }
 
@@ -106,17 +119,6 @@ body {
   font-size: 18px;
 }
 
-/* cột trái / giữa / phải chỉ để đọc code cho dễ, không bắt buộc */
-.left-column,
-.middle-column,
-.right-column {
-  min-height: 200px;
-  min-width: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
 
 .middle-column .panel {
   overflow: hidden;
@@ -171,17 +173,18 @@ body {
 
 /* code viewer */
 .code-block {
-  margin: 0;
+  margin: 0 auto; /* căn giữa code block */
   font-family: "JetBrains Mono", "Fira Code", Menlo, Monaco, Consolas,
   "Liberation Mono", "Courier New", monospace;
   font-size: 13px;
   overflow-x: auto;
   min-width: 0;
+  width: fit-content; /* chỉ rộng bằng nội dung */
+  max-width: 100%; /* không vượt quá container */
 }
 
 .code-block-inner {
   display: inline-block;
-  min-width: 100%;
 }
 
 .code-line {
