@@ -14,6 +14,22 @@ import {buildKruskalDfsSteps} from "./engine/kruskalDfs.ts";
 import {DFSPanel} from "./components/DFSPanel.tsx";
 import {CollapsiblePanel} from "./components/CollapsiblePanel.tsx";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { DraggablePanel } from "./components/DraggablePanel";
 
 
 type Mode = "dsu" | "dfs";
@@ -124,12 +140,37 @@ function App() {
     const [dfsDetailed, setDfsDetailed] = useState(false);
     const [maxDfsSteps, setMaxDfsSteps] = useState(6);
 
-    // Detect mobile screen
+    // Panel order state cho drag & drop - mỗi cột 1 mảng riêng (màn hình lớn)
+    const [leftPanelOrder, setLeftPanelOrder] = useState(["graph-input", "graph-viz", "edge-list"]);
+    const [middlePanelOrder, setMiddlePanelOrder] = useState(["code"]);
+    const [rightPanelOrder, setRightPanelOrder] = useState(["state", "explanation"]);
+
+    // Panel order cho màn hình nhỏ (1 cột) - tất cả panels trong 1 mảng
+    const [singleColumnOrder, setSingleColumnOrder] = useState([
+        "graph-input", "graph-viz", "edge-list", "code", "state", "explanation"
+    ]);
+
+    // Dnd-kit sensors
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8, // Phải kéo ít nhất 8px để bắt đầu drag
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    // Detect mobile screen (≤640px)
     const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 640);
+    // Detect small screen (≤1024px) - chuyển sang 1 cột
+    const [isSmallScreen, setIsSmallScreen] = useState(() => window.innerWidth <= 1024);
 
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 640);
+            setIsSmallScreen(window.innerWidth <= 1024);
         };
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
@@ -241,6 +282,103 @@ function App() {
 
         return () => clearTimeout(timer);
     }, [isPlaying, currentStepIndex, steps.length]);
+
+    // Xử lý drag end - mỗi cột có handler riêng (màn hình lớn)
+    const handleDragEnd = (column: "left" | "middle" | "right") => (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+
+        const setOrder = column === "left" ? setLeftPanelOrder
+            : column === "middle" ? setMiddlePanelOrder
+                : setRightPanelOrder;
+        const order = column === "left" ? leftPanelOrder
+            : column === "middle" ? middlePanelOrder
+                : rightPanelOrder;
+
+        const oldIndex = order.indexOf(active.id as string);
+        const newIndex = order.indexOf(over.id as string);
+        setOrder(arrayMove(order, oldIndex, newIndex));
+    };
+
+    // Xử lý drag end cho single column mode (màn hình nhỏ)
+    const handleSingleColumnDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+
+        const oldIndex = singleColumnOrder.indexOf(active.id as string);
+        const newIndex = singleColumnOrder.indexOf(over.id as string);
+        setSingleColumnOrder(arrayMove(singleColumnOrder, oldIndex, newIndex));
+    };
+
+    // Render panel theo ID
+    const renderPanel = (panelId: string) => {
+        switch (panelId) {
+            case "graph-input":
+                return (
+                    <DraggablePanel key={panelId} id={panelId}>
+                        <CollapsiblePanel title="Graph Input" defaultOpen={!isMobile}>
+                            <GraphInput onGraphLoaded={handleGraphLoaded} />
+                        </CollapsiblePanel>
+                    </DraggablePanel>
+                );
+            case "graph-viz":
+                return (
+                    <DraggablePanel key={panelId} id={panelId}>
+                        <CollapsiblePanel title="Graph Visualization" defaultOpen={true}>
+                            <GraphRenderer
+                                nodes={graph?.nodes ?? []}
+                                edges={graph?.edges ?? []}
+                                currentStep={currentStep}
+                            />
+                        </CollapsiblePanel>
+                    </DraggablePanel>
+                );
+            case "edge-list":
+                return (
+                    <DraggablePanel key={panelId} id={panelId}>
+                        <CollapsiblePanel title="Edge List" defaultOpen={!isMobile}>
+                            <EdgeListPanel
+                                edges={graph?.edges ?? []}
+                                currentStep={currentStep}
+                            />
+                        </CollapsiblePanel>
+                    </DraggablePanel>
+                );
+            case "code":
+                return (
+                    <DraggablePanel key={panelId} id={panelId}>
+                        <CollapsiblePanel title="Code (Python)" defaultOpen={!isMobile}>
+                            <CodeViewer
+                                codeLines={codeLines}
+                                highlightedLines={currentStep?.highlightedLines ?? []}
+                            />
+                        </CollapsiblePanel>
+                    </DraggablePanel>
+                );
+            case "state":
+                return (
+                    <DraggablePanel key={panelId} id={panelId}>
+                        <CollapsiblePanel title={mode === "dsu" ? "DSU State" : "DFS State"} defaultOpen={!isMobile}>
+                            {mode === "dsu" ? (
+                                <DSUPanel currentStep={currentStep} />
+                            ) : (
+                                <DFSPanel edges={graph?.edges ?? []} currentStep={currentStep} />
+                            )}
+                        </CollapsiblePanel>
+                    </DraggablePanel>
+                );
+            case "explanation":
+                return (
+                    <DraggablePanel key={panelId} id={panelId}>
+                        <CollapsiblePanel title="Explanation" defaultOpen={true}>
+                            <ExplanationPanel currentStep={currentStep} />
+                        </CollapsiblePanel>
+                    </DraggablePanel>
+                );
+            default:
+                return null;
+        }
+    };
 
     return (
         <div className="app-root">
@@ -408,46 +546,59 @@ function App() {
             )}
 
 
-            <div className="main-layout">
-                <div className="left-column">
-                    <CollapsiblePanel title="Graph Input" defaultOpen={!isMobile}>
-                        <GraphInput onGraphLoaded={handleGraphLoaded} />
-                    </CollapsiblePanel>
-                    <CollapsiblePanel title="Graph Visualization" defaultOpen={true}>
-                        <GraphRenderer
-                            nodes={graph?.nodes ?? []}
-                            edges={graph?.edges ?? []}
-                            currentStep={currentStep}
-                        />
-                    </CollapsiblePanel>
-                    <CollapsiblePanel title="Edge List" defaultOpen={!isMobile}>
-                        <EdgeListPanel
-                            edges={graph?.edges ?? []}
-                            currentStep={currentStep}
-                        />
-                    </CollapsiblePanel>
+            {/* Layout cho màn hình nhỏ: 1 cột, kéo thả tự do */}
+            {isSmallScreen ? (
+                <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleSingleColumnDragEnd}
+                >
+                    <div className="main-layout single-column">
+                        <SortableContext items={singleColumnOrder} strategy={verticalListSortingStrategy}>
+                            {singleColumnOrder.map(renderPanel)}
+                        </SortableContext>
+                    </div>
+                </DndContext>
+            ) : (
+                /* Layout cho màn hình lớn: 3 cột, kéo thả trong cùng cột */
+                <div className="main-layout">
+                    <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd("left")}
+                    >
+                        <div className="left-column">
+                            <SortableContext items={leftPanelOrder} strategy={verticalListSortingStrategy}>
+                                {leftPanelOrder.map(renderPanel)}
+                            </SortableContext>
+                        </div>
+                    </DndContext>
+
+                    <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd("middle")}
+                    >
+                        <div className="middle-column">
+                            <SortableContext items={middlePanelOrder} strategy={verticalListSortingStrategy}>
+                                {middlePanelOrder.map(renderPanel)}
+                            </SortableContext>
+                        </div>
+                    </DndContext>
+
+                    <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd("right")}
+                    >
+                        <div className="right-column">
+                            <SortableContext items={rightPanelOrder} strategy={verticalListSortingStrategy}>
+                                {rightPanelOrder.map(renderPanel)}
+                            </SortableContext>
+                        </div>
+                    </DndContext>
                 </div>
-                <div className="middle-column">
-                    <CollapsiblePanel title="Code (Python)" defaultOpen={!isMobile}>
-                        <CodeViewer
-                            codeLines={codeLines}
-                            highlightedLines={currentStep?.highlightedLines ?? []}
-                        />
-                    </CollapsiblePanel>
-                </div>
-                <div className="right-column">
-                    <CollapsiblePanel title={mode === "dsu" ? "DSU State" : "DFS State"} defaultOpen={!isMobile}>
-                        {mode === "dsu" ? (
-                            <DSUPanel currentStep={currentStep} />
-                        ) : (
-                            <DFSPanel edges={graph?.edges ?? []} currentStep={currentStep} />
-                        )}
-                    </CollapsiblePanel>
-                    <CollapsiblePanel title="Explanation" defaultOpen={true}>
-                        <ExplanationPanel currentStep={currentStep} />
-                    </CollapsiblePanel>
-                </div>
-            </div>
+            )}
             <SpeedInsights />
         </div>
     );

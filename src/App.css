@@ -39,10 +39,10 @@ body {
   background: transparent;
 }
 
-/* layout 3 cột chính */
+/* layout 3 cột chính - cột giữa ưu tiên hiển thị đủ code */
 .main-layout {
   display: grid;
-  grid-template-columns: minmax(200px, 1fr) auto minmax(200px, 1fr);  /* cột giữa = auto để co theo nội dung */
+  grid-template-columns: minmax(200px, 1fr) auto minmax(200px, 1fr);
   gap: 16px;
   align-items: flex-start;
   margin-top: 12px;
@@ -52,7 +52,7 @@ body {
   min-width: 0;
 }
 
-/* cột trái / giữa / phải - style mặc định */
+/* cột trái / giữa / phải */
 .left-column,
 .middle-column,
 .right-column {
@@ -64,7 +64,7 @@ body {
   gap: 12px;
 }
 
-/* Màn hình rộng: ưu tiên code block */
+/* Màn hình rộng */
 @media (min-width: 1280px) {
   .main-layout {
     grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
@@ -90,6 +90,12 @@ body {
   .right-column {
     display: contents; /* Loại bỏ wrapper, panel con nằm trực tiếp trong grid */
   }
+}
+
+/* Single column mode - dùng JS để render thay vì CSS display: contents */
+.main-layout.single-column {
+  flex-direction: column;
+  gap: 12px;
 }
 
 /* Màn hình rất nhỏ: điện thoại dọc */
@@ -129,6 +135,17 @@ body {
   padding: 0;
 }
 
+/* Chỉ code panel mới tự co theo nội dung */
+.middle-column .panel-collapsible {
+  width: fit-content;
+  min-width: 0;
+}
+
+/* Khi panel code đang mở, vẫn giữ fit-content */
+.middle-column .panel-collapsible:has(.panel-collapsible-body) {
+  width: fit-content;
+}
+
 .panel-collapsible-header {
   display: flex;
   align-items: center;
@@ -137,6 +154,7 @@ body {
   padding: 10px 12px;
   border-bottom: 1px solid rgba(15, 23, 42, 0.08);
   cursor: pointer;
+  white-space: nowrap; /* Header không xuống dòng */
 }
 
 .panel-collapsible-title {
@@ -381,6 +399,49 @@ body {
 
 .help-button:hover {
   background: rgba(15, 23, 42, 0.08);
+}
+
+/* Draggable panel styles */
+.draggable-panel-wrapper {
+  /* không cần position relative nữa */
+}
+
+/* Drag handle nằm trong panel-collapsible-actions (flex container) */
+.drag-handle {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(15, 23, 42, 0.03);
+  color: #64748b; /* màu slate-500 - đủ tối để nhìn rõ */
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  letter-spacing: -1px; /* kéo 2 ký tự ⋮ lại gần nhau */
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.drag-handle:hover {
+  background: rgba(15, 23, 42, 0.08);
+  color: rgba(15, 23, 42, 0.7);
+}
+
+.drag-handle:active,
+.drag-handle.dragging {
+  cursor: grabbing;
+  background: rgba(79, 70, 229, 0.15); /* màu tím khi đang grab */
+  color: #4f46e5; /* màu tím */
+  border-color: rgba(79, 70, 229, 0.3);
+}
+
+/* Drag overlay style - panel đang được kéo */
+.draggable-panel-wrapper[style*="opacity: 0.5"] .drag-handle {
+  background: rgba(79, 70, 229, 0.15);
+  color: #4f46e5;
+  border-color: rgba(79, 70, 229, 0.3);
 }
 
 

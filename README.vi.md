@@ -52,6 +52,14 @@ Công cụ trực quan hóa **thuật toán Kruskal tìm cây khung nhỏ nhất
 - Bố cục thích ứng cho các kích thước màn hình khác nhau
 - Điều khiển thân thiện với cảm ứng
 
+### 🖱️ Kéo thả Panel
+- **Sắp xếp lại các panel** bằng cách kéo biểu tượng grip (⋮⋮) trên header mỗi panel
+- **Desktop (>1024px)**: Kéo panel trong cùng cột của nó (trái, giữa, phải)
+![desktop_ver.png](images/desktop_ver.png)
+- **Mobile/Tablet (≤1024px)**: Kéo tự do bất kỳ panel nào đến bất kỳ vị trí nào trong layout 1 cột
+![mobile_ver.png](images/mobile_ver.png)
+- Tùy chỉnh không gian làm việc để tập trung vào những gì quan trọng nhất với bạn
+
 ---
 
 ## 📸 Ảnh chụp màn hình
@@ -158,6 +166,7 @@ Chọn giữa:
 - **Frontend Framework**: [React 19](https://react.dev/) với TypeScript
 - **Build Tool**: [Vite](https://vitejs.dev/) (sử dụng Rolldown)
 - **Trực quan hóa đồ thị**: [Sigma.js](https://www.sigmajs.org/) + [Graphology](https://graphology.github.io/)
+- **Kéo thả**: [@dnd-kit](https://dndkit.com/) cho tính năng sắp xếp panel
 - **Tô sáng code**: [Prism React Renderer](https://github.com/FormidableLabs/prism-react-renderer)
 - **Deployment**: [Vercel](https://vercel.com/)
 - **Analytics**: [Vercel Speed Insights](https://vercel.com/docs/speed-insights)
@@ -176,6 +185,7 @@ kruskal-mst-visualizer/
 │   │   ├── CollapsiblePanel.tsx # Wrapper thu gọn cho các panel
 │   │   ├── ControlPanel.tsx     # Điều khiển phát lại
 │   │   ├── DFSPanel.tsx         # Trực quan hóa trạng thái DFS
+│   │   ├── DraggablePanel.tsx   # Wrapper kéo thả cho các panel
 │   │   ├── DSUPanel.tsx         # Bảng trạng thái DSU
 │   │   ├── EdgeListPanel.tsx    # Danh sách cạnh đã sắp xếp
 │   │   ├── ExplanationPanel.tsx # Giải thích từng bước

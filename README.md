@@ -52,6 +52,12 @@ An interactive web-based visualization tool for **Kruskal's Minimum Spanning Tre
 - Adaptive layout for different screen sizes
 - Touch-friendly controls
 
+### 🖱️ Drag & Drop Panels
+- **Reorder panels** by dragging the grip handle (⋮⋮) on each panel header
+- **Desktop (>1024px)**: Drag panels within their column (left, middle, right)
+- **Mobile/Tablet (≤1024px)**: Freely drag any panel to any position in the single-column layout
+- Customize your workspace to focus on what matters most to you
+
 ---
 
 ## 📸 Screenshots
@@ -158,6 +164,7 @@ Select between:
 - **Frontend Framework**: [React 19](https://react.dev/) with TypeScript
 - **Build Tool**: [Vite](https://vitejs.dev/) (using Rolldown)
 - **Graph Visualization**: [Sigma.js](https://www.sigmajs.org/) + [Graphology](https://graphology.github.io/)
+- **Drag & Drop**: [@dnd-kit](https://dndkit.com/) for panel reordering
 - **Code Highlighting**: [Prism React Renderer](https://github.com/FormidableLabs/prism-react-renderer)
 - **Deployment**: [Vercel](https://vercel.com/)
 - **Analytics**: [Vercel Speed Insights](https://vercel.com/docs/speed-insights)
@@ -176,6 +183,7 @@ kruskal-mst-visualizer/
 │   │   ├── CollapsiblePanel.tsx # Collapsible wrapper for panels
 │   │   ├── ControlPanel.tsx     # Playback controls
 │   │   ├── DFSPanel.tsx         # DFS state visualization
+│   │   ├── DraggablePanel.tsx   # Drag & drop wrapper for panels
 │   │   ├── DSUPanel.tsx         # DSU state table
 │   │   ├── EdgeListPanel.tsx    # Sorted edge list
 │   │   ├── ExplanationPanel.tsx # Step explanations
