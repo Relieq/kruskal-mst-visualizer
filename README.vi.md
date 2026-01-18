@@ -92,7 +92,7 @@ Công cụ trực quan hóa **thuật toán Kruskal tìm cây khung nhỏ nhất
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/kruskal-mst-visualizer.git
+git clone https://github.com/Relieq/kruskal-mst-visualizer.git
 cd kruskal-mst-visualizer
 
 # Cài đặt dependencies
@@ -237,12 +237,18 @@ Dự án này là mã nguồn mở và có sẵn theo [Giấy phép MIT](LICENSE
 
 ---
 
+## 📝 Báo cáo dự án
+
+Dự án này được phát triển như một phần của học phần **Project I** tại Đại học Bách Khoa Hà Nội. Báo cáo LaTeX đầy đủ có trong file [`kruskal_mst_visualizer_report_en.pdf`](kruskal_mst_visualizer_report_en.pdf).
+
+---
+
 ## 🙏 Lời cảm ơn
 
 - Lấy cảm hứng từ nhu cầu cần có công cụ trực quan hóa thuật toán tốt hơn trong giáo dục khoa học máy tính
 - Xây dựng bằng công nghệ web hiện đại để đảm bảo khả năng truy cập và hiệu suất
-- Cô Nguyễn Khánh Phương - giảng viên hướng dẫn học phần Project tại Đại học Bách Khoa Hà Nội, người đã truyền cảm hứng 
-trong quá trình phát triển dự án này.
+- Cô Nguyễn Khánh Phương - giảng viên hướng dẫn học phần Project I tại Đại học Bách Khoa Hà Nội, người đã hướng dẫn tận 
+tình trong quá trình phát triển dự án này.
 
 ---
 

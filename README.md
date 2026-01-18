@@ -55,7 +55,9 @@ An interactive web-based visualization tool for **Kruskal's Minimum Spanning Tre
 ### 🖱️ Drag & Drop Panels
 - **Reorder panels** by dragging the grip handle (⋮⋮) on each panel header
 - **Desktop (>1024px)**: Drag panels within their column (left, middle, right)
+![desktop_ver.png](images/desktop_ver.png)
 - **Mobile/Tablet (≤1024px)**: Freely drag any panel to any position in the single-column layout
+![mobile_ver.png](images/mobile_ver.png)
 - Customize your workspace to focus on what matters most to you
 
 ---
@@ -235,12 +237,18 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
+## 📝 Project Report
+
+This project was developed as part of **Project I** course at Hanoi University of Science and Technology. The full LaTeX report is available in [`kruskal_mst_visualizer_report_en.pdf`](kruskal_mst_visualizer_report_en.pdf).
+
+---
+
 ## 🙏 Acknowledgments
 
 - Inspired by the need for better algorithm visualization tools in computer science education
 - Built with modern web technologies for accessibility and performance
-- Ms. Nguyễn Khánh Phương – the instructor who guided the Project course at Hanoi University of Science and Technology, 
-and whose inspiration was instrumental throughout the development of this project.
+- Ms. Nguyễn Khánh Phương – the instructor who guided the Project I course at Hanoi University of Science and Technology, 
+and whose guidance was instrumental throughout the development of this project.
 
 ---
 
